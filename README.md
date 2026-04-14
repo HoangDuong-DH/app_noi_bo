@@ -35,3 +35,9 @@ For MVP validation, do this sequence instead of only `npm run dev`:
 2. `npm start`
 3. Login with seeded user
 4. Verify: bootstrap, save, retry, duplicate, and status polling for selected job
+
+
+## Git conflict note
+
+- `.env.example` uses `merge=union` (see `.gitattributes`) so common env-variable additions from both branches are merged with fewer conflicts.
+- For source code files (`src/**`), keep normal merge behavior to avoid silent logic breakage.

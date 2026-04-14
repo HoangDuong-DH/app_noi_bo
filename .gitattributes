@@ -1,0 +1,3 @@
+# Reduce noisy merge conflicts for env template additions.
+# This combines non-overlapping lines from both branches.
+.env.example merge=union
