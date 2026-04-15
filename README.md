@@ -41,3 +41,15 @@ For MVP validation, do this sequence instead of only `npm run dev`:
 
 - `.env.example` uses `merge=union` (see `.gitattributes`) so common env-variable additions from both branches are merged with fewer conflicts.
 - For source code files (`src/**`), keep normal merge behavior to avoid silent logic breakage.
+
+
+## Architecture boundaries (must keep)
+
+- Next.js is a thin UI/API facade.
+- Frontend never calls n8n directly.
+- Next.js never calls Google Sheets directly.
+- `src/lib/n8n.ts` is the single gateway from Next.js to n8n.
+- App-facing n8n webhooks are gateway workflows for the app.
+- Workflow A remains the main execution consumer chain: `A -> B -> J -> C1/C2/C3 -> D -> N`.
+- Queue is shared across the team.
+- Actor/requester identity is for audit, not queue visibility filtering.
