@@ -33,7 +33,7 @@ function mergeBootstrapWithLocal(prevJobs: NormalizedJob[], bootstrapJobs: Norma
   return bootstrapJobs.map((bootstrapJob) => {
     const localJob = prevById.get(bootstrapJob.job_id);
 
-    if (!isIncomingNewer(localJob, bootstrapJob)) {
+    if (!isIncomingNewer(localJob, bootstrapJob) && localJob) {
       return localJob;
     }
 
@@ -85,20 +85,21 @@ export default function SaPage() {
     if (!res.ok) return;
 
     const data: { job?: NormalizedJob } = await res.json().catch(() => ({}));
-    if (!data.job?.job_id) return;
+    const incomingJob = data.job;
+    if (!incomingJob?.job_id) return;
 
     setJobs((prev) =>
       prev.map((job) => {
-        if (job.job_id !== data.job?.job_id) return job;
-        if (!isIncomingNewer(job, data.job)) return job;
-        return { ...job, ...data.job };
+        if (job.job_id !== incomingJob.job_id) return job;
+        if (!isIncomingNewer(job, incomingJob)) return job;
+        return { ...job, ...incomingJob };
       })
     );
 
     setSelected((prev) => {
-      if (prev?.job_id !== data.job?.job_id) return prev;
-      if (!isIncomingNewer(prev, data.job)) return prev;
-      return { ...prev, ...data.job };
+      if (!prev || prev.job_id !== incomingJob.job_id) return prev;
+      if (!isIncomingNewer(prev, incomingJob)) return prev;
+      return { ...prev, ...incomingJob, job_id: prev.job_id };
     });
   }, [selected]);
 
