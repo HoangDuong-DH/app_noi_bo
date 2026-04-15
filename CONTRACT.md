@@ -34,11 +34,7 @@ type NormalizedJob = {
 
 Common errors:
 - `401 UNAUTHORIZED`: missing/invalid session.
-
 - `400 BAD_REQUEST`: missing required fields or invalid JSON body.
-
-- `400 BAD_REQUEST`: missing required fields.
-
 - `502 UPSTREAM_ERROR`: n8n/network failure.
 
 ---
@@ -53,7 +49,6 @@ Response body (`200`):
 
 ```json
 {
-
   "jobs": [
     {
       "job_id": "JOB-001",
@@ -64,18 +59,12 @@ Response body (`200`):
   ],
   "availableIndustries": ["Beauty", "FMCG"],
   "availableGodWords": ["Premium", "Natural"]
-
-  "jobs": ["NormalizedJob[]"],
-  "availableIndustries": ["string"],
-  "availableGodWords": ["string"]
-
 }
 ```
 
 ---
 
 ## POST /api/jobs/save
-
 
 > Phase 1 scope: **create-only**. This endpoint does not update existing jobs (no upsert in this phase).
 
@@ -92,7 +81,6 @@ Request body:
 
 - Required fields: `product_name`, `brand_name`.
 - Optional fields: `industry`, `god_word`.
-
 
 Response body (`200`) supports 2 queue-safe variants:
 
@@ -112,19 +100,12 @@ Response body (`200`) supports 2 queue-safe variants:
 
 2) Webhook only acknowledges queue write (common in queue-driven mode):
 
-Response body (`200`):
-
-
 ```json
 {
   "ok": true,
-
   "accepted": true,
   "job_id": "JOB-002",
   "message": "queued"
-
-  "job": "NormalizedJob"
-
 }
 ```
 
@@ -144,7 +125,6 @@ Request body:
 - Required fields: `job_id`.
 - Optional fields: `reason`.
 
-
 Response body (`200`) supports 2 queue-safe variants (same as `/api/jobs/save`):
 
 ```json
@@ -157,19 +137,12 @@ Response body (`200`) supports 2 queue-safe variants (same as `/api/jobs/save`):
 }
 ```
 
-Response body (`200`):
-
-
 ```json
 {
   "ok": true,
-
   "accepted": true,
   "job_id": "JOB-001",
   "message": "retry queued"
-
-  "job": "NormalizedJob"
-
 }
 ```
 
@@ -188,7 +161,6 @@ Request body:
 - Required fields: `job_id`.
 - Optional fields: none.
 
-
 Response body (`200`) supports 2 queue-safe variants (same as `/api/jobs/save`):
 
 ```json
@@ -201,19 +173,12 @@ Response body (`200`) supports 2 queue-safe variants (same as `/api/jobs/save`):
 }
 ```
 
-Response body (`200`):
-
-
 ```json
 {
   "ok": true,
-
   "accepted": true,
   "job_id": "JOB-003",
   "message": "duplicate queued"
-
-  "job": "NormalizedJob"
-
 }
 ```
 
@@ -229,14 +194,10 @@ Response body (`200`):
 
 ```json
 {
-
   "job": {
     "job_id": "JOB-001",
     "status": "processing",
     "updated_at": "2026-04-14T03:40:00.000Z"
   }
-
-  "job": "NormalizedJob"
-
 }
 ```

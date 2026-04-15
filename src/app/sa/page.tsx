@@ -23,8 +23,10 @@ function isIncomingNewer(current: NormalizedJob | undefined, incoming: Normalize
   if (Number.isNaN(currentUpdated) || Number.isNaN(incomingUpdated)) {
     return true;
   }
+
   return incomingUpdated >= currentUpdated;
 }
+
 function mergeBootstrapWithLocal(prevJobs: NormalizedJob[], bootstrapJobs: NormalizedJob[]): NormalizedJob[] {
   const prevById = new Map(prevJobs.map((job) => [job.job_id, job]));
 
@@ -39,8 +41,6 @@ function mergeBootstrapWithLocal(prevJobs: NormalizedJob[], bootstrapJobs: Norma
   });
 }
 
-
- 
 export default function SaPage() {
   const [jobs, setJobs] = useState<NormalizedJob[]>([]);
   const [selected, setSelected] = useState<NormalizedJob | null>(null);
@@ -102,12 +102,6 @@ export default function SaPage() {
       return { ...prev, ...incomingJob, job_id: prev.job_id };
     });
   }, [selected]);
-    setJobs(data.jobs);
-    setSelected((prev) => {
-      if (!prev) return null;
-      return data.jobs.find((x) => x.job_id === prev.job_id) || null;
-    });
-  }, []);
 
   useEffect(() => {
     void load();

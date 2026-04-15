@@ -12,21 +12,23 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();    const normalizedEmail = email.trim().toLowerCase();
+    e.preventDefault();
+    const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
       setError("Email và mật khẩu là bắt buộc.");
       return;
     }
+
     setLoading(true);
     setError(null);
 
     const res = await signIn("credentials", {
       email: normalizedEmail,
-      email,
       password,
       redirect: false
     });
+
     setLoading(false);
     if (res?.error) {
       setError("Email hoặc mật khẩu không đúng.");
