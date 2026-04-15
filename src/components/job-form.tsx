@@ -9,13 +9,21 @@ export default function JobForm({ onSaved }: { onSaved: () => void }) {
   const [error, setError] = useState<string | null>(null);
 
   async function submit() {
+    const normalizedProductName = productName.trim();
+    const normalizedBrandName = brandName.trim();
+
+    if (!normalizedProductName || !normalizedBrandName) {
+      setError("Tên sản phẩm và thương hiệu là bắt buộc.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     const res = await fetch("/api/jobs/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product_name: productName, brand_name: brandName })
+      body: JSON.stringify({ product_name: normalizedProductName, brand_name: normalizedBrandName })
     });
 
     if (!res.ok) {
@@ -47,7 +55,7 @@ export default function JobForm({ onSaved }: { onSaved: () => void }) {
       />
       <button
         onClick={submit}
-        disabled={loading || !productName || !brandName}
+        disabled={loading || !productName.trim() || !brandName.trim()}
         className="rounded bg-slate-900 px-4 py-2 text-white disabled:opacity-40"
       >
         {loading ? "Đang gửi..." : "Lưu job"}

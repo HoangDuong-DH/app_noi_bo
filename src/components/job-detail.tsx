@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { NormalizedJob } from "@/types";
+
+const RETRYABLE_STATUSES = new Set(["failed", "error", "timeout", "cancelled"]);
 
 export default function JobDetail({
   job,
@@ -13,8 +15,16 @@ export default function JobDetail({
   const [loadingAction, setLoadingAction] = useState<"retry" | "duplicate" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const canRetry = useMemo(() => {
+    const status = job?.status?.trim().toLowerCase();
+    const statusFinal = job?.status_final?.trim().toLowerCase();
+    return Boolean((status && RETRYABLE_STATUSES.has(status)) || (statusFinal && RETRYABLE_STATUSES.has(statusFinal)));
+  }, [job?.status, job?.status_final]);
+
   async function callAction(action: "retry" | "duplicate") {
     if (!job?.job_id) return;
+    if (action === "retry" && !canRetry) return;
+
     setError(null);
     setLoadingAction(action);
 
@@ -51,8 +61,9 @@ export default function JobDetail({
       <div className="flex gap-2 pt-2">
         <button
           onClick={() => void callAction("retry")}
-          disabled={loadingAction !== null}
+          disabled={loadingAction !== null || !canRetry}
           className="rounded bg-amber-600 px-3 py-2 text-white disabled:opacity-40"
+          title={canRetry ? "Retry job lỗi" : "Retry chỉ cho job lỗi dựa trên status/status_final (failed/error/timeout/cancelled)"}
         >
           {loadingAction === "retry" ? "Đang retry..." : "Retry job"}
         </button>
